@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: clinzo
+      POSTGRES_USER: clinzo
+      POSTGRES_PASSWORD: clinzo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinzo -d clinzo"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports: ["5433:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+  app:
+    build: .
+    depends_on:
+      postgres: { condition: service_healthy }
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinzo
+      SPRING_DATASOURCE_USERNAME: clinzo
+      SPRING_DATASOURCE_PASSWORD: clinzo
+    ports: ["8080:8080"]
+volumes:
+  postgres-data:
