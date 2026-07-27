@@ -7,12 +7,12 @@ A production-oriented Spring Boot 3 / Java 21 backend for scheduling online cons
 The application is layered deliberately: controllers contain HTTP concerns, services own transactional business invariants, repositories perform persistence, and MapStruct maps entities to API responses. Flyway owns the PostgreSQL schema; Hibernate validates it rather than creating it.
 
 ```mermaid
-erDiagram
-  DOCTOR ||--o{ AVAILABILITY : defines
-  DOCTOR ||--o{ SLOT : owns
-  AVAILABILITY ||--o{ SLOT : generates
-  SLOT ||--o| BOOKING : has
-  SLOT ||--o{ RESERVATION_HOLD : may_have
+flowchart LR
+  Doctor -->|defines| Availability
+  Doctor -->|owns| Slot
+  Availability -->|generates| Slot
+  Slot -->|has| Booking
+  Slot -->|may have| ReservationHold
 ```
 
 ```mermaid
@@ -24,7 +24,8 @@ sequenceDiagram
   API->>Postgres: SELECT slot FOR UPDATE
   Postgres-->>API: locked current state
   API->>API: validate AVAILABLE and future
-  API->>Postgres: insert booking; update slot BOOKED
+  API->>Postgres: insert booking
+  API->>Postgres: update slot BOOKED
   API->>Postgres: COMMIT
   API-->>Client: 201 Created
 ```
