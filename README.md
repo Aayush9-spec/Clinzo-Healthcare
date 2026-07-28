@@ -6,7 +6,7 @@ A production-oriented Spring Boot 3 / Java 21 backend for scheduling online cons
 
 The application is layered deliberately: controllers contain HTTP concerns, services own transactional business invariants, repositories perform persistence, and MapStruct maps entities to API responses. Flyway owns the PostgreSQL schema; Hibernate validates it rather than creating it.
 
-```mermaid
+```mermaid 
 flowchart LR
   Doctor -->|defines| Availability
   Doctor -->|owns| Slot
